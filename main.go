@@ -1,6 +1,8 @@
 package main
 
-import "github.com/definev/200lab_golang/challenges"
+import (
+	simplecrudbackend "github.com/definev/200lab_golang/simple-crud-backend"
+)
 
 func main() {
 	// challenges.CrawlData(5)
@@ -10,5 +12,8 @@ func main() {
 	// challenges.MutationStruct()
 	// challenges.StringConcat()
 	// challenges.StringJoin()
-	challenges.StringSprint()
+	// challenges.StringSprint()
+	// challenges.StringBuilder()
+	// challenges.StringCompare()
+	simplecrudbackend.Main()
 }
