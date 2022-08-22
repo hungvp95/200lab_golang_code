@@ -40,7 +40,7 @@ func Main() {
 	db.Create(&note)
 
 	fmt.Println("Start reading")
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 2)
 
 	/// READ
 	readNote := Note{}
@@ -48,7 +48,7 @@ func Main() {
 	fmt.Printf("Read note : %+v\n", readNote)
 
 	fmt.Println("Start updating")
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 2)
 
 	/// UPDATE
 	newTitle, newContent := "This is a new title", ""
@@ -63,7 +63,7 @@ func Main() {
 	fmt.Printf("Read note after update : %+v\n", readNote)
 
 	fmt.Println("Start deleting")
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 2)
 
 	/// DELETE
 	db.Table(Note{}.TableName()).Where("id = ?", readNote.Id).Delete(nil)
