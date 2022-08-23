@@ -34,13 +34,13 @@ func (RestaurantCreate) TableName() string {
 	return Restaurant{}.TableName()
 }
 
-func (r RestaurantCreate) Validate() error {
-	name := strings.TrimSpace(r.Name)
-	if name == "" {
+func (r *RestaurantCreate) Validate() error {
+	r.Name = strings.TrimSpace(r.Name)
+	if r.Name == "" {
 		return errors.New("restaurant name can't be blank")
 	}
-	addr := strings.TrimSpace(r.Addr)
-	if addr == "" {
+	r.Addr = strings.TrimSpace(r.Addr)
+	if r.Addr == "" {
 		return errors.New("restaurant address can't be blank")
 	}
 
