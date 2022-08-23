@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/definev/200lab_golang/food_delivery/component"
-	tgin "github.com/definev/200lab_golang/food_delivery/modules/restaurant/transport/t_gin"
+	restaurantTranfer "github.com/definev/200lab_golang/food_delivery/modules/restaurant/transport/t_gin"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -29,7 +29,8 @@ func Main() {
 		gRestaurant.GET("/ping", func(ctx *gin.Context) {
 			ctx.String(http.StatusOK, "Pong!")
 		})
-		gRestaurant.POST("/", tgin.CreateRestaurant(appCtx))
+		gRestaurant.POST("/", restaurantTranfer.CreateRestaurant(appCtx))
+		gRestaurant.GET("/",restaurantTranfer.ListRestaurant(appCtx))
 	}
 
 	r.Run("localhost:8080")

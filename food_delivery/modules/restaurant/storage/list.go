@@ -3,32 +3,46 @@ package storage
 import (
 	"context"
 
+	"github.com/definev/200lab_golang/food_delivery/common"
 	"github.com/definev/200lab_golang/food_delivery/modules/restaurant/model"
+	"gorm.io/gorm"
 )
 
 func (s *sqlStore) ListRestaurantByFilter(
 	ctx context.Context,
 	conditions map[string]any,
 	filter *model.RestaurantFilter,
+	paging *common.Paging,
 	moreKeys ...string,
-) []model.Restaurant {
+) ([]model.Restaurant, error) {
 	var result []model.Restaurant
 
-	db := s.db
-
-	db = db.Where(conditions)
+	db := s.db.Table(model.Restaurant{}.TableName())
 
 	for _, key := range moreKeys {
-		db = db.Where(key)
+		db = db.Preload(key)
 	}
 
+	db = db.Where(conditions)
+	filterDB(db, filter)
+
+	if err := db.Count(&paging.Total).Error; err != nil {
+		return nil, err
+	}
+
+	if err := db.Find(&result).Error; err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func filterDB(db *gorm.DB, filter *model.RestaurantFilter) *gorm.DB {
 	if filter != nil {
 		if filter.CityId != nil {
 			db = db.Where("city_id = ?", filter.CityId)
 		}
 	}
 
-	db.Find(&result)
-
-	return result
+	return db
 }
