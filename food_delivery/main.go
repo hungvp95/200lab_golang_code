@@ -24,13 +24,15 @@ func Main() {
 
 	appCtx := component.CreateAppComponent(db)
 
+	r.GET("/ping", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, "Pong!")
+	})
+
 	gRestaurant := r.Group("/restaurant")
 	{
-		gRestaurant.GET("/ping", func(ctx *gin.Context) {
-			ctx.String(http.StatusOK, "Pong!")
-		})
 		gRestaurant.POST("/", restaurantTranfer.CreateRestaurant(appCtx))
 		gRestaurant.GET("/",restaurantTranfer.ListRestaurant(appCtx))
+		gRestaurant.GET("/:id", restaurantTranfer.GetRestaurantById(appCtx))
 	}
 
 	r.Run("localhost:8080")
