@@ -12,14 +12,13 @@ func (s *sqlStore) GetRestaurantById(
 	moreKeys ...string,
 ) (model.Restaurant, error) {
 	result := model.Restaurant{}
-	db := s.db
+	db := s.db.Table(model.Restaurant{}.TableName())
 
 	for _, key := range moreKeys {
 		db = db.Preload(key)
 	}
 
 	if err := db.
-		Table(model.Restaurant{}.TableName()).
 		Where("id = ?", id).
 		First(&result).Error; err != nil {
 		return result, err
