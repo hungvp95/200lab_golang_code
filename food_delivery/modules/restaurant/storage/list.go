@@ -15,6 +15,7 @@ func (s *sqlStore) ListRestaurantByFilter(
 	paging *common.Paging,
 	moreKeys ...string,
 ) ([]model.Restaurant, error) {
+	
 	var result []model.Restaurant
 
 	db := s.db.Table(model.Restaurant{}.TableName())

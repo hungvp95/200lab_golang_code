@@ -1,7 +1,9 @@
 package tgin
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/definev/200lab_golang/food_delivery/common"
 	"github.com/definev/200lab_golang/food_delivery/component"
@@ -12,7 +14,11 @@ import (
 
 func GetRestaurantById(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		id := ctx.Param("id")
+		id, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": errors.New("id must be int")})
+			return
+		}
 
 		store := storage.NewSQLStore(appCtx.GetDBConnection())
 		hand := handler.NewGetRestaurantByIdHandler(store)

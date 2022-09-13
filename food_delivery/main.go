@@ -19,7 +19,7 @@ func Main() {
 		log.Panicln(err)
 	}
 
-	r := gin.Default()
+	r := gin.New()
 	gin.SetMode(gin.ReleaseMode)
 
 	appCtx := component.CreateAppComponent(db)
@@ -33,6 +33,7 @@ func Main() {
 		gRestaurant.POST("/", restaurantTranfer.CreateRestaurant(appCtx))
 		gRestaurant.GET("/",restaurantTranfer.ListRestaurant(appCtx))
 		gRestaurant.GET("/:id", restaurantTranfer.GetRestaurantById(appCtx))
+		gRestaurant.PATCH("/:id", restaurantTranfer.UpdateRestaurant(appCtx))
 	}
 
 	r.Run("localhost:8080")

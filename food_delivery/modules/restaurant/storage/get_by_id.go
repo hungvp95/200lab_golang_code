@@ -6,11 +6,11 @@ import (
 	"github.com/definev/200lab_golang/food_delivery/modules/restaurant/model"
 )
 
-func (s *sqlStore) GetRestaurantById(
+func (s *sqlStore) FindRestaurantById(
 	ctx context.Context,
-	id string,
+	id int,
 	moreKeys ...string,
-) (model.Restaurant, error) {
+) (*model.Restaurant, error) {
 	result := model.Restaurant{}
 	db := s.db.Table(model.Restaurant{}.TableName())
 
@@ -21,8 +21,8 @@ func (s *sqlStore) GetRestaurantById(
 	if err := db.
 		Where("id = ?", id).
 		First(&result).Error; err != nil {
-		return result, err
+		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }

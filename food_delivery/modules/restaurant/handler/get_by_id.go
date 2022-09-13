@@ -7,11 +7,11 @@ import (
 )
 
 type GetRestaurantByIdInterface interface {
-	GetRestaurantById(
+	FindRestaurantById(
 		ctx context.Context,
-		id string,
+		id int,
 		moreKeys ...string,
-	) (model.Restaurant, error)
+	) (*model.Restaurant, error)
 }
 
 type getRestaurantByIdHandler struct {
@@ -22,6 +22,6 @@ func NewGetRestaurantByIdHandler(store GetRestaurantByIdInterface) getRestaurant
 	return getRestaurantByIdHandler{store}
 }
 
-func (h getRestaurantByIdHandler) GetRestaurantById(ctx context.Context, id string) (model.Restaurant, error) {
-	return h.store.GetRestaurantById(ctx, id)
+func (h getRestaurantByIdHandler) GetRestaurantById(ctx context.Context, id int) (*model.Restaurant, error) {
+	return h.store.FindRestaurantById(ctx, id)
 }
