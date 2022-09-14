@@ -34,6 +34,7 @@ func Main() {
 		gRestaurant.GET("/",restaurantTranfer.ListRestaurant(appCtx))
 		gRestaurant.GET("/:id", restaurantTranfer.GetRestaurantById(appCtx))
 		gRestaurant.PATCH("/:id", restaurantTranfer.UpdateRestaurant(appCtx))
+		gRestaurant.DELETE("/:id", restaurantTranfer.DeleteRestaurant(appCtx))
 	}
 
 	r.Run("localhost:8080")

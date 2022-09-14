@@ -27,7 +27,7 @@ func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 
 		if err := handler.CreateRestaurant(ctx, &data); err != nil {
 			log.Println(err)
-			ctx.JSON(http.StatusBadGateway, gin.H{"error": err})
+			ctx.JSON(http.StatusBadGateway, err)
 			return
 		}
 

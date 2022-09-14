@@ -1,7 +1,6 @@
 package tgin
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -16,7 +15,7 @@ func GetRestaurantById(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": errors.New("id must be int")})
+			ctx.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -25,7 +24,7 @@ func GetRestaurantById(appCtx component.AppContext) gin.HandlerFunc {
 	
 		result, err := hand.GetRestaurantById(ctx.Request.Context(), id)
 		if err != nil {
-			ctx.JSON(http.StatusBadGateway, gin.H{"error": err})
+			ctx.JSON(http.StatusBadGateway, err)
 			return
 		}
 

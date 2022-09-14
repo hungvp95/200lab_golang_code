@@ -4,6 +4,10 @@ import (
 	"github.com/definev/200lab_golang/food_delivery/common"
 )
 
+var (
+	EntityName = "restaurant"
+)
+
 type Restaurant struct {
 	common.SqlModel `json:",inline"`
 	Name            string `json:"name" gorm:"not null;column:name;"`

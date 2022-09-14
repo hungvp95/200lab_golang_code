@@ -3,7 +3,9 @@ package storage
 import (
 	"context"
 
+	"github.com/definev/200lab_golang/food_delivery/common"
 	"github.com/definev/200lab_golang/food_delivery/modules/restaurant/model"
+	"gorm.io/gorm"
 )
 
 func (s *sqlStore) FindRestaurantById(
@@ -20,8 +22,12 @@ func (s *sqlStore) FindRestaurantById(
 
 	if err := db.
 		Where("id = ?", id).
-		First(&result).Error; err != nil {
-		return nil, err
+		First(&result).
+		Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, common.ErrRecordNotFound
+		}
+		return nil, common.ErrDB(err)
 	}
 
 	return &result, nil

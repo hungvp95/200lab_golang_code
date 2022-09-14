@@ -28,11 +28,11 @@ func (s *sqlStore) ListRestaurantByFilter(
 	filterDB(db, filter)
 
 	if err := db.Count(&paging.Total).Error; err != nil {
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	if err := db.Find(&result).Error; err != nil {
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	return result, nil
