@@ -1,7 +1,6 @@
 package tgin
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/definev/200lab_golang/food_delivery/common"
@@ -17,8 +16,7 @@ func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		var data model.RestaurantCreate
 
 		if err := ctx.Bind(&data); err != nil {
-			log.Println(err)
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+			ctx.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -26,7 +24,6 @@ func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		handler := handler.NewCreateRestaurantHandler(store)
 
 		if err := handler.CreateRestaurant(ctx, &data); err != nil {
-			log.Println(err)
 			ctx.JSON(http.StatusBadGateway, err)
 			return
 		}

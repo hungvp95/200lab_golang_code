@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/definev/200lab_golang/food_delivery/common"
 	"github.com/definev/200lab_golang/food_delivery/modules/restaurant/model"
 )
 
@@ -31,7 +32,7 @@ func (h *deleteRestaurantHandler) DeleteRestaurant(ctx context.Context, id int) 
 	}
 
 	if oldData.Status == 0 {
-		return errors.New("Data already deleted!")
+		return common.ErrEntityDeleted(model.EntityName, errors.New("Status must diferent 0"))
 	}
 	if err := h.store.SoftDeleteRestaurant(ctx, id); err != nil {
 		return err

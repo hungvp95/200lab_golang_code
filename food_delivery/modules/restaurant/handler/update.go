@@ -2,8 +2,8 @@ package handler
 
 import (
 	"context"
-	"errors"
 
+	"github.com/definev/200lab_golang/food_delivery/common"
 	"github.com/definev/200lab_golang/food_delivery/modules/restaurant/model"
 )
 
@@ -40,7 +40,7 @@ func (h updateRestaurantHandler) UpdateRestaurant(
 	}
 
 	if oldData.Status == 0 {
-		return errors.New("data deleted")
+		return common.ErrEntityDeleted(model.EntityName, common.ErrStatusDifferentZero)
 	}
 
 	if err := h.store.UpdateRestaurant(ctx, id, data); err != nil {

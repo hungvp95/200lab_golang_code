@@ -13,9 +13,16 @@ func (s *sqlStore) UpdateRestaurant(
 	data *model.RestaurantUpdate,
 	moreKeys ...string,
 ) error {
-	db := s.db.Where("id = ?", id)
+	db := s.db
 
-	if err := db.Updates(data).Error; err != nil {
+	for _, key := range moreKeys {
+		db = db.Preload(key)
+	}
+
+	if err := db.
+		Where("id = ?", id).
+		Updates(data).
+		Error; err != nil {
 		return common.ErrDB(err)
 	}
 

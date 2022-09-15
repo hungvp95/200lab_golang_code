@@ -3,6 +3,7 @@ package tgin
 import (
 	"strconv"
 
+	"github.com/definev/200lab_golang/food_delivery/common"
 	"github.com/definev/200lab_golang/food_delivery/component"
 	"github.com/definev/200lab_golang/food_delivery/modules/restaurant/handler"
 	"github.com/definev/200lab_golang/food_delivery/modules/restaurant/storage"
@@ -13,7 +14,7 @@ func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			ctx.String(400, "Wrong format!")
+			ctx.JSON(400, common.ErrInvalidRequest(common.ErrInvalidRequest(err)))
 			return
 		}
 
@@ -21,7 +22,7 @@ func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		handler := handler.NewDeleteRestaurantHandler(store)
 		err = handler.DeleteRestaurant(ctx.Request.Context(), id)
 		if err != nil {
-			ctx.String(500, err.Error())
+			ctx.JSON(500, err)
 			return
 		}
 

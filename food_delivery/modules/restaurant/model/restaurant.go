@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	EntityName = "restaurant"
+	EntityName = "Restaurant"
 )
 
 type Restaurant struct {
