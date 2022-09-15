@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/definev/200lab_golang/food_delivery/component"
+	"github.com/definev/200lab_golang/food_delivery/middleware"
 	restaurantTranfer "github.com/definev/200lab_golang/food_delivery/modules/restaurant/transport/t_gin"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -18,12 +19,13 @@ func Main() {
 	if err != nil {
 		log.Panicln(err)
 	}
+	appCtx := component.CreateAppComponent(db)
 
 	r := gin.New()
 	gin.SetMode(gin.ReleaseMode)
+	r.Use(middleware.Recover())
 
-	appCtx := component.CreateAppComponent(db)
-
+	
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "Pong!")
 	})
