@@ -2,6 +2,7 @@ package reataurantbusiness
 
 import (
 	"context"
+	"food-delivery-200lab/common"
 	restaurantmodel "food-delivery-200lab/module/restaurant/model"
 )
 
@@ -23,7 +24,7 @@ func (business *updateRestaurantBusiness) UpdateRestaurant(
 	data *restaurantmodel.RestaurantUpdate,
 ) error {
 	if err := business.store.Update(ctx, id, data); err != nil {
-		return err
+		return common.ErrCannotUpdateEntity(restaurantmodel.EntityName, err)
 	}
 	return nil
 }

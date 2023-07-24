@@ -2,6 +2,7 @@ package main
 
 import (
 	"food-delivery-200lab/component"
+	"food-delivery-200lab/middleware"
 	ginrestaurant "food-delivery-200lab/module/restaurant/transport/gin"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -23,9 +24,10 @@ func main() {
 
 	db = db.Debug()
 
-	router := gin.Default()
-	group := router.Group("/v1")
 	appCtx := component.NewAppContext(db)
+	router := gin.Default()
+	router.Use(middleware.Recover(appCtx))
+	group := router.Group("/v1")
 
 	testConnectServer(router)
 	createNewRestaurant(appCtx, group)

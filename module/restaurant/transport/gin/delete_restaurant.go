@@ -15,10 +15,7 @@ func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": err.Error(),
-			})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		db := appCtx.GetMainDBConnection()
@@ -26,10 +23,7 @@ func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 
 		business := reataurantbusiness.InitDeleteRestaurantBusiness(store)
 		if err := business.DeleteRestaurant(ctx.Request.Context(), id); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
+			panic(err)
 		}
 
 		deleteSuccess := map[string]interface{}{

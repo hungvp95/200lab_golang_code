@@ -15,21 +15,23 @@ func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var input restaurantmodel.RestaurantCreate
 		if inputErr := ctx.ShouldBind(&input); inputErr != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": inputErr.Error(),
-			})
-			return
+			panic(inputErr)
 		}
+
+		// panic and recover in goroutine
+		/*go func() {
+			defer common.AppRecover()
+			var arr []int
+			log.Println(arr[0])
+		}()*/
 
 		db := appCtx.GetMainDBConnection()
 		store := restaurantstorage.NewSqlStore(db)
 
 		business := reataurantbusiness.InitCreateRestaurantBusiness(store)
 		if err := business.CreateRestaurant(ctx.Request.Context(), &input); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
+			// Note: panic should only use in transport layer
+			panic(err)
 		}
 
 		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(input))

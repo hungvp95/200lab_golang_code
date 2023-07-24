@@ -16,19 +16,13 @@ func GetListRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var paging common.Paging
 		if err := ctx.ShouldBind(&paging); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": err.Error(),
-			})
-			return
+			panic(err)
 		}
 		paging.FullFill()
 
 		var filter restaurantmodel.Filter
 		if err := ctx.ShouldBind(&filter); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": err.Error(),
-			})
-			return
+			panic(err)
 		}
 
 		db := appCtx.GetMainDBConnection()
@@ -37,10 +31,7 @@ func GetListRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		business := reataurantbusiness.InitGetRestaurantBusiness(store)
 		result, err := business.GetListRestaurant(ctx.Request.Context(), &filter, &paging)
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": err.Error(),
-			})
-			return
+			panic(err)
 		}
 
 		ctx.JSON(http.StatusOK, common.FullSuccessResponse(result, paging, filter))
@@ -51,9 +42,7 @@ func GetRestaurantById(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": err.Error(),
-			})
+			ctx.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -63,10 +52,7 @@ func GetRestaurantById(appCtx component.AppContext) gin.HandlerFunc {
 		business := reataurantbusiness.InitGetRestaurantBusiness(store)
 		result, getErr := business.GetRestaurantById(ctx.Request.Context(), id)
 		if getErr != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": getErr.Error(),
-			})
-			return
+			panic(getErr)
 		}
 
 		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(result))
