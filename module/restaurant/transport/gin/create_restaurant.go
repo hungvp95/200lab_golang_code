@@ -15,7 +15,7 @@ func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var input restaurantmodel.RestaurantCreate
 		if inputErr := ctx.ShouldBind(&input); inputErr != nil {
-			panic(inputErr)
+			panic(common.ErrInvalidRequest(inputErr))
 		}
 
 		// panic and recover in goroutine
@@ -34,6 +34,7 @@ func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 			panic(err)
 		}
 
+		input.MaskId(false)
 		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(input))
 	}
 }

@@ -9,12 +9,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 func UpdateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		id, err := strconv.Atoi(context.Param("id"))
+		//id, err := strconv.Atoi(context.Param("id"))
+		uid, err := common.FromBase58(context.Param("id"))
 		if err != nil {
 			context.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
@@ -23,14 +23,14 @@ func UpdateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		var input restaurantmodel.RestaurantUpdate
 		inputErr := context.ShouldBind(&input)
 		if inputErr != nil {
-			panic(inputErr)
+			panic(common.ErrInvalidRequest(inputErr))
 		}
 
 		db := appCtx.GetMainDBConnection()
 		store := restaurantstorage.NewSqlStore(db)
 
 		business := reataurantbusiness.InitUpdateRestaurantBusiness(store)
-		if updateErr := business.UpdateRestaurant(context, id, &input); updateErr != nil {
+		if updateErr := business.UpdateRestaurant(context, int(uid.GetLocalID()), &input); updateErr != nil {
 			panic(updateErr)
 		}
 

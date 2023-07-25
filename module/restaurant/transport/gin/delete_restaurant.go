@@ -8,12 +8,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		id, err := strconv.Atoi(ctx.Param("id"))
+		//id, err := strconv.Atoi(ctx.Param("id"))
+		uid, err := common.FromBase58(ctx.Param("id"))
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
@@ -22,7 +22,7 @@ func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		store := restaurantstorage.NewSqlStore(db)
 
 		business := reataurantbusiness.InitDeleteRestaurantBusiness(store)
-		if err := business.DeleteRestaurant(ctx.Request.Context(), id); err != nil {
+		if err := business.DeleteRestaurant(ctx.Request.Context(), int(uid.GetLocalID())); err != nil {
 			panic(err)
 		}
 
