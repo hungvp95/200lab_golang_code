@@ -35,6 +35,6 @@ func CreateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
 		}
 
 		input.MaskId(false)
-		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(input))
+		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(input.FakeId))
 	}
 }

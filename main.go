@@ -4,6 +4,7 @@ import (
 	"food-delivery-200lab/component"
 	"food-delivery-200lab/middleware"
 	ginrestaurant "food-delivery-200lab/module/restaurant/transport/gin"
+	"food-delivery-200lab/module/upload/transport/ginupload"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -27,6 +28,8 @@ func main() {
 	appCtx := component.NewAppContext(db)
 	router := gin.Default()
 	router.Use(middleware.Recover(appCtx))
+	// only use for case: save file to static folder
+	router.Static("/static", "./static")
 	group := router.Group("/v1")
 
 	testConnectServer(router)
@@ -35,6 +38,7 @@ func main() {
 	getRestaurantById(appCtx, group)
 	updateRestaurantById(appCtx, group)
 	deleteRestaurantById(appCtx, group)
+	uploadImageFile(appCtx, group)
 
 	routerErr := router.Run()
 	if routerErr != nil {
@@ -60,6 +64,10 @@ func getRestaurants(appCtx component.AppContext, group *gin.RouterGroup) {
 
 func createNewRestaurant(appCtx component.AppContext, group *gin.RouterGroup) {
 	group.POST("restaurant", ginrestaurant.CreateRestaurant(appCtx))
+}
+
+func uploadImageFile(appCtx component.AppContext, group *gin.RouterGroup) {
+	group.POST("uploadImage", ginupload.UploadImageSimple(appCtx))
 }
 
 // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

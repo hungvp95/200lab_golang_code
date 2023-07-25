@@ -26,13 +26,32 @@ func (store *sqlStore) GetListWithCondition(
 		return nil, common.ErrDB(err)
 	}
 
+	// paging use cursor
+	if cursorId := paging.FakeCursor; cursorId != "" {
+		uid, err := common.FromBase58(cursorId)
+		if err != nil {
+			return nil, common.ErrDB(err)
+		}
+		db = db.Where("id < ?", uid.GetLocalID())
+	} else {
+		offset := (paging.Page - 1) * paging.Limit
+		db.Offset(offset)
+	}
+
 	var result []restaurantmodel.Restaurant
-	offset := (paging.Page - 1) * paging.Limit
-	if err := db.Offset(offset).
+
+	if err := db.
 		Limit(paging.Limit).
 		Order("id desc").
 		Find(&result).Error; err != nil {
 		return nil, common.ErrDB(err)
+	}
+
+	// return next cursor for client
+	if len(result) > 0 {
+		lastItem := result[len(result)-1]
+		lastItem.MaskId(false)
+		paging.NextCursor = lastItem.FakeId.String()
 	}
 
 	return result, nil
