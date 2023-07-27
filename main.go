@@ -2,9 +2,10 @@ package main
 
 import (
 	"food-delivery-200lab/component"
+	"food-delivery-200lab/component/uploadprovider"
 	"food-delivery-200lab/middleware"
 	ginrestaurant "food-delivery-200lab/module/restaurant/transport/gin"
-	"food-delivery-200lab/module/upload/transport/ginupload"
+	"food-delivery-200lab/module/upload/uploadtransport/ginupload"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -16,6 +17,13 @@ import (
 func main() {
 	/*Connect to MySQL db*/
 	connStr := os.Getenv("MYSQL_CONN_STR")
+
+	s3BucketName := os.Getenv("S3_BUCKET_NAME")
+	s3Region := os.Getenv("S3_REGION")
+	s3ApiKey := os.Getenv("S3_API_KEY")
+	s3SecretKey := os.Getenv("S3_SECRET_KEY")
+	s3Domain := os.Getenv("S3_DOMAIN")
+
 	db, err := gorm.Open(mysql.Open(connStr), &gorm.Config{})
 
 	if err != nil {
@@ -25,11 +33,12 @@ func main() {
 
 	db = db.Debug()
 
-	appCtx := component.NewAppContext(db)
+	s3Provider := uploadprovider.NewS3Provider(s3BucketName, s3Region, s3ApiKey, s3SecretKey, s3Domain)
+	appCtx := component.NewAppContext(db, s3Provider)
 	router := gin.Default()
 	router.Use(middleware.Recover(appCtx))
 	// only use for case: save file to static folder
-	router.Static("/static", "./static")
+	//router.Static("/static", "./static")
 	group := router.Group("/v1")
 
 	testConnectServer(router)
@@ -67,7 +76,7 @@ func createNewRestaurant(appCtx component.AppContext, group *gin.RouterGroup) {
 }
 
 func uploadImageFile(appCtx component.AppContext, group *gin.RouterGroup) {
-	group.POST("uploadImage", ginupload.UploadImageSimple(appCtx))
+	group.POST("uploadImage", ginupload.UploadImageFile(appCtx))
 }
 
 // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
